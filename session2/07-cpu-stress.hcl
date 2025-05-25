@@ -11,20 +11,24 @@ job "cpu-stress" {
       min     = 1    // Minimum number of allocations
       max     = 3    // Maximum number of allocations to scale out to
 
-	  policy {
-      cooldown = "30s"
-      evaluation_interval = "10s"
+      policy {
+        // Cooldown period after a scaling event before nomad-autoscaler
+        // considers another scaling event for this policy.
+        cooldown            = "30s"
 
-      check "high_node-cpu" {
-        source = "nomad-apm"
-        query = "avg_cpu-allocated"
-        query_window = "10s"
+        // How frequently nomad-autoscaler evaluates this specific scaling policy.
+        evaluation_interval = "10s"
 
-        strategy "target-value" {
-          target    = 80
+        check "high_node-cpu" {
+          source = "nomad-apm"
+          query = "avg_cpu-allocated"
+          query_window = "10s"
+
+          strategy "target-value" {
+            target    = 80
+          }
         }
       }
-	  }
     }
 
 

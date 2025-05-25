@@ -1,4 +1,4 @@
-### Lesson 07: Rolling Updates and Versioning
+### Lesson 06: Rolling Updates and Versioning
 
 Previously, when we changed a job (e.g., updating an image tag) and re-ran `nomad job run`, Nomad would typically stop all old instances and start new ones. For services that need to remain available, this downtime is unacceptable. This lesson introduces **rolling updates**, a strategy to update applications with minimal or zero downtime by gradually replacing old instances with new ones. We'll also touch upon how Nomad handles job versions.
 
