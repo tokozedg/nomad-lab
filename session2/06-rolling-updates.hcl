@@ -3,7 +3,7 @@ job "nginx-updater" {
   type        = "service"
 
   group "nginx-group" {
-    count = 2 // We want 2 instances of Nginx running
+    count = 3 // We want 2 instances of Nginx running
 
     // Defines the strategy for updating allocations in this group.
     update {
@@ -24,25 +24,14 @@ job "nginx-updater" {
       auto_revert       = true
 
 
-      // canary specifies how many instances of the new version are deployed first for testing.
-      // 0 means no canaries, proceed with rolling update directly.
-      // If > 0, usually auto_promote is set to false, requiring manual promotion.
-      canary            = 0
-	  //auto_promote      = true
+      # Blue-green example,
+      # By setting the canary count equal to that of the task group, blue/green
+      # deployments can be achieved. When a new version of the job is submitted,
+      # instead of doing a rolling upgrade of the existing allocations, the new
+      # version of the group is deployed along side the existing set. 
+      # canary            = 3
+	    # auto_promote      = true
     }
-
-    /*
-    Blue-green example,
-    By setting the canary count equal to that of the task group, blue/green
-    deployments can be achieved. When a new version of the job is submitted,
-    instead of doing a rolling upgrade of the existing allocations, the new
-    version of the group is deployed along side the existing set. 
-
-    update {
-      canary       = 3
-      max_parallel = 3
-    }
-    */
 
     network {
       port "http" {
@@ -55,7 +44,7 @@ job "nginx-updater" {
     service {
       name = "nginx-web" // Name for service discovery
       port = "http"     // Health check this port
-	  provider = "nomad"
+      provider = "nomad"
 
       // Health check for Nginx. The update stanza relies on these checks
       // to determine if a new instance is "healthy".
@@ -73,8 +62,12 @@ job "nginx-updater" {
       config {
         // Start with an initial version of Nginx.
         // Using specific patch versions is good practice for reproducibility.
-        image = "nginx:1.26.0"
+        image = "nginx:1.27.0"
         ports = ["http"]
+      }
+      resources {
+        cpu    = 100
+        memory = 64
       }
 
     }

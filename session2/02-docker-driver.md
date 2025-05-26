@@ -25,21 +25,3 @@ In the previous lesson, we used `raw_exec` to run commands directly on the host.
     nomad job status docker-tools-example
     ```
     You should see two task groups and their allocations. Note the Allocation IDs for each task.
-
-3.  **Inspect the `whalesay-hello` task**:
-    *   Get an Allocation ID for the `whalesay-hello` task.
-    *   Check allocation status:
-        ```bash
-        nomad alloc status <ALLOC_ID_WHALESAY_HELLO>
-        ```
-    *   View task logs (to see the output of `cowsay`):
-        ```bash
-        nomad alloc logs <ALLOC_ID_WHALESAY_HELLO>
-        ```
-        You should see the whale graphic with the message.
-
-4.  **Stop the job**:
-    To stop the job and clean up the allocations:
-    ```bash
-    nomad job stop -purge docker-tools-example
-    ```

@@ -40,6 +40,7 @@ EOH
         // This directory (NOMAD_SECRETS_DIR) has restricted access.
         destination = "secrets/app.ini" // e.g., alloc/<alloc_id>/app-task/secrets/app.ini
       }
+
       template {
         data = file("05-app.conf")
         destination = "local/app.conf"

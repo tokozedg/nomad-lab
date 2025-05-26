@@ -1,6 +1,6 @@
 // Defines a Nomad job named "docker-tools-example".
 // This job demonstrates running simple command-line tools using the Docker driver.
-job "docker-tools-example" {
+job "hello-job" {
   // Specifies the datacenter(s) where this job can run.
   // Ensure your Nomad agent is part of "dc1" or adjust as needed.
   // For dev mode (nomad agent -dev), this is typically "dc1".
@@ -11,12 +11,12 @@ job "docker-tools-example" {
   type = "batch"
 
   // Task group for running docker/whalesay.
-  group "whalesay-group" {
-    task "whalesay-hello" {
+  group "hello-group" {
+    task "hello-task" {
       driver = "docker"
       config {
-        image   = "docker/whalesay:latest" // For this simple tool, latest is fine
-        command = "cowsay"
+        image   = "alpine:latest"
+        command = "echo"
         args    = ["Hello from Nomad and Docker!"]
       }
       resources {
