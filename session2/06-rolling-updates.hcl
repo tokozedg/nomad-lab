@@ -23,13 +23,12 @@ job "nginx-updater" {
       // if the update fails (e.g., new instances don't become healthy).
       auto_revert       = true
 
-
       # Blue-green example,
       # By setting the canary count equal to that of the task group, blue/green
       # deployments can be achieved. When a new version of the job is submitted,
       # instead of doing a rolling upgrade of the existing allocations, the new
       # version of the group is deployed along side the existing set. 
-      # canary            = 3
+      canary            = 1
 	    # auto_promote      = true
     }
 
@@ -62,7 +61,7 @@ job "nginx-updater" {
       config {
         // Start with an initial version of Nginx.
         // Using specific patch versions is good practice for reproducibility.
-        image = "nginx:1.27.0"
+        image = "nginx:1.26.0"
         ports = ["http"]
       }
       resources {
