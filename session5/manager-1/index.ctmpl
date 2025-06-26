@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MySQL Service Status</title>
+<style>
+  body { font-family: sans-serif; background-color: #f0f0f0; margin: 0; padding: 40px; }
+  .container { max-width: 650px; margin: 50px auto; padding: 30px; background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
+  .status { padding: 20px; border-radius: 5px; color: white; font-weight: bold; font-size: 1.1em; }
+  .healthy { background-color: #28a745; }
+  .failover { background-color: #ffc107; color: black;}
+  .down { background-color: #dc3545; }
+  h1 { color: #333; }
+  p { font-size: 1.2em; line-height: 1.5; margin: 0;}
+  code { background-color: rgba(0,0,0,0.1); padding: 3px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Current Active MySQL Server</h1>
+
+  {{/*
+    Attempt to find a healthy service named "mysql" with the tag "primary".
+    The 'with' block executes only if a result is found.
+  */}}
+  {{ with service "primary.mysql" }}
+    <div class="status healthy">
+      <p><strong>Primary Server is Healthy</strong></p>
+      <p>Address: <code>{{ (index . 0).Address }}:{{ (index . 0).Port }}</code></p>
+    </div>
+  {{ else }}
+    {{/*
+      If no healthy primary is found, attempt to find one with the "secondary" tag.
+    */}}
+    {{ with service "backup.mysql" }}
+      <div class="status failover">
+        <p><strong>FAILOVER: Primary is down. Using Secondary Server.</strong></p>
+        <p>Address: <code>{{ (index . 0).Address }}:{{ (index . 0).Port }}</code></p>
+      </div>
+    {{ else }}
+      {{/*
+        If neither a healthy primary nor a healthy secondary is found, show an error.
+      */}}
+      <div class="status down">
+        <p><strong>CRITICAL: All MySQL Servers are Down!</strong></p>
+      </div>
+    {{ end }}
+  {{ end }}
+
+</div>
+
+</body>
+</html>
